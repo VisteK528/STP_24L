@@ -5,7 +5,7 @@ A = [-21  -146  -336; 1     0     0; 0     1     0];
 B = [1; 0; 0];
 C = [1 7.5 12.5];
 D = 0;
-t_fin = 12;
+t_fin = 8;
 
 % Export setup
 set(0, 'defaulttextinterpreter','latex');
@@ -14,9 +14,10 @@ set(0, 'DefaultStairLineWidth',1);
 resolution_dpi = 400;
 export_pictures = true;
 
-sb_vec = [-1 -2 -5];
+% sb_vec = [-1 -6.9 -5];
+sb_vec = [-3];
 
-for i=1:3
+for i=1:1
     % Generate new K vector
     k = acker(A, B, sb_vec(i)*ones(1, 3));
 
