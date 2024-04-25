@@ -4,14 +4,14 @@ xo_0 = [10 20 30];
 x_fin = [0 0 0];
 
 t_0 = 0;
-t_fin = 12;
+t_fin = 6;
 
 A = [-21  -146  -336; 1     0     0; 0     1     0];
 B = [1; 0; 0];
 C = [1 7.5 12.5];
 D = 0;
 
-sb = -6.82;
+sb = -6.9;
 k = acker(A, B, [sb sb sb]);
 
 % Export setup
@@ -21,8 +21,8 @@ set(0, 'DefaultStairLineWidth',1);
 resolution_dpi = 400;
 export_pictures = true;
 
-s0_vec = [-1];
-for i=1:1
+s0_vec = [-3 -6 -9];
+for i=1:3
     s0 = s0_vec(i);
     L = acker(A', C', [s0 s0 s0]);
     observator_sim = sim("ex5_ex6_observator.slx",'Solver','ode45','StartTime','0','StopTime', int2str(t_fin));
@@ -49,7 +49,7 @@ for i=1:1
         ylabel(y_label_str, 'fontsize', 18);
         
         % General export setup
-        legend("$x_" + int2str(j) + "(t)$", "$\hat{x_"+ int2str(j) +"}(t)$", 'fontsize', 16, 'Interpreter','latex');
+        legend("$x_" + int2str(j) + "(t)$", "$\hat{x}_"+ int2str(j) +"(t)$", 'fontsize', 16, 'Interpreter','latex');
         x0=10;
         y0=10;
         width=1280;
