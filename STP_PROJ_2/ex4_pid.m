@@ -1,13 +1,10 @@
-% Difference equation parameters
-c12 = 0.03641;
-c11 = 0.04144;
-b2 = -0.6782;
-b1 = 1.655;
+clear;
+load("stp_proj2_data.mat")
 
 % Digital PID parameters
-r0 = 2.3119;
-r1 = -4.1972;
-r2 = 1.90512;
+Kk = 0.661505;
+Tk = 19.6;
+[r2, r1, r0] = discrete_pid_parameters(Kk, Tk, Tp);
 
 % General settings
 kk = 200;
@@ -17,8 +14,9 @@ u(1:12) = 0;
 y(1:12) = 0;
 e(1:12) = 0;
 
+[c, b] = diff_eq_coeffs;
 for k=13:kk
-    y(k) = y(k-2)*b2 + y(k-1)*b1 + u(k-12)*c12 + u(k-11)*c11;
+    y(k) = y(k-2)*b(2) + y(k-1)*b(1) + u(k-12)*c(2) + u(k-11)*c(1);
 
     e(k) = yzad(k) - y(k);
 
@@ -26,13 +24,15 @@ for k=13:kk
 end
 
 figure;
-stairs(u);
+shape = size(y);
+len = shape(2);
+stairs((1:len)*Tp, u);
 title("u");
 
 figure;
 %stairs(yzad);
 %hold on;
-stairs(y);
+stairs((1:len)*Tp, y);
 title("y");
 
 
