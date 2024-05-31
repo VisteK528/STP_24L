@@ -1,8 +1,4 @@
-% Horizons
-N = 30;
-Nu = 10;
-D = 120;
-
+function [y, u] = ex4_dmc(N, Nu, D, lambda, iterations)
 % Step response for given dynamic horizon
 s = ex4_step_response(D);
 s = s(2:end);
@@ -32,15 +28,12 @@ end
 
 
 % Obliczanie parametrów regulatora
-lambda = 1;
-
 I = eye(Nu);
 K = ((M'*M+lambda*I)^(-1))*M';
 Ku = K(1,:)*MP;
 Ke = sum(K(1, :));
 
 % Main loop
-iterations = 200;
 y = zeros(iterations, 1);
 u = zeros(iterations, 1);
 u(1:iterations) = 0;
@@ -67,18 +60,5 @@ for k=13:iterations
     uk = uk + deltauk_p(1);
     u(k) = uk;
 end
-
-figure;
-stairs((1:iterations)*0.5, y);
-hold on;
-stairs((1:iterations)*0.5, u);
-
-x0=10;
-y0=10;
-width=1280;
-height=720;
-set(gcf,'position',[x0,y0,width,height]);
-grid(gca,'minor');
-title('');
-
+end
 
