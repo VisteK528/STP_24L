@@ -32,7 +32,7 @@ end
 
 
 % Obliczanie parametrów regulatora
-lambda = 20;
+lambda = 1;
 
 I = eye(Nu);
 K = ((M'*M+lambda*I)^(-1))*M';
