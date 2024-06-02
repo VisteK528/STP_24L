@@ -40,7 +40,7 @@ y(1:12) = 0;
 
 uk = 0;
 d(1:iterations) = 0;
-d(100:end) = 0.1;
+% d(100:end) = 0.1;
 y_0(1:N+2) = 0;
 
 
@@ -52,7 +52,9 @@ for k=13:iterations
 
     % Model prediction
     for i=1:N
-        if 12 - i > 0
+        if (12 - i) == 0
+            y_0(i+2) = y_0(i)*b(2) + y_0(i+1)*b(1) + u(k+i-13)*c(2) + u(k-1)*c(1)+d(k);
+        elseif 12 - i > 0
             y_0(i+2) = y_0(i)*b(2) + y_0(i+1)*b(1) + u(k+i-13)*c(2) + u(k+i-12)*c(1)+d(k);
         else
             y_0(i+2) = y_0(i)*b(2) + y_0(i+1)*b(1) + u(k-1)*c(2) + u(k-1)*c(1)+d(k);

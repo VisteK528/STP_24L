@@ -2,7 +2,7 @@ set(0, 'defaulttextinterpreter','latex');
 set(0, 'DefaultLineLineWidth',1);
 set(0, 'DefaultStairLineWidth',1);
 
-[y, u] = ex4_dmc(50, 10, 120, 20, 200);
+[y, u] = ex4_dmc(30, 10, 85, 20, 400, 13);
 n = length(y);
 
 figure;

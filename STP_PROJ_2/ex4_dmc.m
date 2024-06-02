@@ -1,10 +1,8 @@
-function [y, u] = ex4_dmc(N, Nu, D, lambda, iterations)
+function [y, u] = ex4_dmc(N, Nu, D, lambda, iterations, kstart)
 % Step response for given dynamic horizon
-s = ex4_step_response(D);
-s = s(2:end);
-Nu = Nu - 1;
-D = D - 1;
-N = N - 1;
+s = ex4_step_response(kstart, N, D);
+s = s(kstart+1:end);
+
 
 
 % Fill M matrix
@@ -26,7 +24,6 @@ for i = 1:N
 end
 
 
-
 % Obliczanie parametrów regulatora
 I = eye(Nu);
 K = ((M'*M+lambda*I)^(-1))*M';
@@ -37,16 +34,15 @@ Ke = sum(K(1, :));
 y = zeros(iterations, 1);
 u = zeros(iterations, 1);
 u(1:iterations) = 0;
-y_zad(1:10) = 0;
-y_zad(10:iterations) = 1;
+y_zad(1:kstart) = 0;
+y_zad(kstart:iterations) = 1;
 y(1:12) = 0;
-e(1:12) = 0;
+
 deltauk_p = zeros(D-1, 1);
-delta_u = zeros(D-1, 1);
 uk = 0;
 
 [c, b] = diff_eq_coeffs;
-for k=13:iterations
+for k=kstart:iterations
     y(k) = y(k-2)*b(2) + y(k-1)*b(1) + u(k-12)*c(2) + u(k-11)*c(1);
 
     ek = y_zad(k) - y(k);
@@ -57,8 +53,9 @@ for k=13:iterations
         deltauk_p(n) = deltauk_p(n-1);
     end
     deltauk_p(1) = deltauk;
-    uk = uk + deltauk_p(1);
+    uk = uk + deltauk;
     u(k) = uk;
 end
+
 end
 
