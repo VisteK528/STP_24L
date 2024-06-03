@@ -6,15 +6,19 @@ resolution_dpi = 300;
 export_pictures = true;
 
 D = 40;
-N = 45;
-kstart = 15;
-y = ex4_step_response(kstart, N, D);
-y_zad(1:D+N+kstart) = 3.4;
+N = 40;
+kstart = 13;
+step = 20;
+[c, b] = diff_eq_coeffs;
+y = ex4_step_response(kstart, N, D, c, b);
+y = [zeros(step-kstart, 1); y];
+y_zad = zeros(D+N+step, 1);
+y_zad(step:end) = 1;
 
 figure;
-stairs(1:D+N+kstart, y);
+stairs(1:D+N+step, y);
 hold on;
-stairs(1:D+N+kstart, y_zad, '--');
+stairs(1:D+N+step, y_zad, '--');
 
 x0=10;
 y0=10;
@@ -24,6 +28,7 @@ set(gcf,'position',[x0,y0,width,height]);
 grid(gca,'minor');
 title('');
 
+legend("y", "y_{zad}", 'fontsize', 12, 'Location', 'best');
 xlabel('$k$', 'fontsize', 14, 'Interpreter','latex');
 ylabel('$y$', 'fontsize', 14, 'Interpreter','latex');
 

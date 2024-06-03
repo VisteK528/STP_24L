@@ -1,12 +1,12 @@
 
 
-[y, u] = ex7_gpc(120, 50, 120, 20, 200);
+[y, u] = ex7_gpc(20, 3, 85, 5, 100, 100000, 4.1835, 0, 0.0, 200);
 n = length(y);
-
+% 1.61009
 figure;
 stairs(1:n, y);
 hold on;
-stairs(1:n, u);
+% stairs(1:n, u);
 
 x0=10;
 y0=10;

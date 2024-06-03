@@ -1,19 +1,8 @@
-function [y, u] = ex7_gpc(N, Nu, D, lambda, iterations)
+function [y, u] = ex7_gpc(N, Nu, D, lambda, start, kend, K_0, T_0, z_value, z_step)
 
-% Horizons
 [c, b] = diff_eq_coeffs;
-
-% Step response for given dynamic horizon
-% s = zeros(D, 1);
-% for j=1:D
-%     b_sum = 0;
-%     for i=1:min(j-1, 2)
-%         b_sum = b_sum + b(3-i)*s(j-i);
-%     end
-%     s(j) = sum(c(1:min(j, 2))) + b_sum; 
-% end
-s = ex4_step_response(D+1);
-s = s(2:end);
+s = ex4_step_response(start, N, D, c, b);
+s = s(start+1:end);
 
 
 % Fill M matrix
@@ -28,41 +17,38 @@ I = eye(Nu);
 K = ((M'*M+lambda*I)^(-1))*M';
 
 
-
 % Main loop
-y = zeros(iterations, 1);
-u = zeros(iterations, 1);
+y = zeros(kend, 1);
+u = zeros(kend, 1);
+z = zeros(kend, 1);
 
-y_zad(1:10) = 0;
-y_zad(10:iterations) = 1;
-y(1:12) = 0;
+y_zad(1:start) = 0;
+y_zad(start:kend) = 1;
 
 
 uk = 0;
-d(1:iterations) = 0;
-% d(100:end) = 0.1;
-y_0(1:N+2) = 0;
+z(z_step:end) = z_value;
+ypred(1:N+2) = 0;
 
+for k=start:kend
+    y(k) = y(k-2)*b(2) + y(k-1)*b(1) + K_0*(u(k-12-T_0)*c(2) + u(k-11-T_0)*c(1)+z(k));
+    d = y(k) - (y(k-2)*b(2) + y(k-1)*b(1) +u(k-12)*c(2) + u(k-11)*c(1));
 
-for k=13:iterations
-    y(k) = y(k-2)*b(2) + y(k-1)*b(1) + u(k-12)*c(2) + u(k-11)*c(1)+d(k);
-
-    y_0(1) = y(k-2);
-    y_0(2) = y(k-1);
-
+    ypred(1) = y(k-1);
+    ypred(2) = y(k);
     % Model prediction
     for i=1:N
-        if (12 - i) == 0
-            y_0(i+2) = y_0(i)*b(2) + y_0(i+1)*b(1) + u(k+i-13)*c(2) + u(k-1)*c(1)+d(k);
-        elseif 12 - i > 0
-            y_0(i+2) = y_0(i)*b(2) + y_0(i+1)*b(1) + u(k+i-13)*c(2) + u(k+i-12)*c(1)+d(k);
+        if (11 - i) == 0
+            ypred(i+2) = ypred(i)*b(2) + ypred(i+1)*b(1) + u(k+i-12)*c(2) + u(k-1)*c(1) + d;
+        elseif 11 - i > 0
+            ypred(i+2) = ypred(i)*b(2) + ypred(i+1)*b(1) + u(k+i-12)*c(2) + u(k+i-11)*c(1) + d;
         else
-            y_0(i+2) = y_0(i)*b(2) + y_0(i+1)*b(1) + u(k-1)*c(2) + u(k-1)*c(1)+d(k);
+            ypred(i+2) = ypred(i)*b(2) + ypred(i+1)*b(1) + u(k-1)*c(2) + u(k-1)*c(1) + d;
         end
     end
-    y_zad_pred = ones(N, 1) * y_zad(k);
 
-    deltauk = K*(y_zad_pred - y_0(3:end)');
+    y_zad_pred = ones(N, 1) * y_zad(k);
+    deltauk = K*(y_zad_pred - ypred(3:end)');
     uk = uk + deltauk(1);
     u(k) = uk;
 end

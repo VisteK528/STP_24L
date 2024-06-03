@@ -7,7 +7,7 @@ set(0, 'defaulttextinterpreter','latex');
 set(0, 'DefaultLineLineWidth',1);
 set(0, 'DefaultStairLineWidth',1);
 resolution_dpi = 300;
-export_pictures = true;
+export_pictures = false;
 
 % Compute discrete transfer function based on continuous transfer function
 Gc = tf([Ko], [T1*T2 T1 + T2 1],'InputDelay', To);
